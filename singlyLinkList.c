@@ -7,8 +7,12 @@ struct train{
 }*start;
 
 void clearTerminal();
+int getInput();
+struct train *create_bogie(int bogie_No);
 void create_Train();
 void insert_at_end(int bogie_no);
+void insert_at_beg(int bogie_no);
+void insert_at_pos();
 void display();
 int main()
 {
@@ -35,6 +39,44 @@ int main()
                   case 2:
                         display();
                         break;
+                  case 3:
+                        if(start!=NULL)
+                        {
+                        clearTerminal();
+                        printf("1.Insert at begining of the Train\n");
+                        printf("2.Insert at End of the Train\n");
+                        printf("3.Insert at Position of the Train\n");
+                        printf("4.Back To Previous Menu.\n");
+                        printf("\nEnter Your choice : ");
+                        fflush(stdin);
+                        scanf("%d",&choice);
+                         int bg_no;
+                        switch(choice)
+                        {
+                            case 1:
+                               insert_at_beg(getInput());
+                               printf("Bogie Insert at begining of the Train.\n");
+                               break;
+                            case 2:
+                                insert_at_end(getInput());
+                                printf("Bogie Insert at end of the Train.\n");
+                                break;
+                            case 3:
+                                insert_at_pos();
+                                break;
+                            case 4:
+                               break;
+                            default:
+                                printf("\a\a\aInvalid Input!!!\n");
+
+                        }
+                        }
+                        else
+                        {
+                           printf("\a\a\aThere no train is build yet!!!\n");
+                        }
+                        break;
+
                   case 7:
                         exit(1);
                   default:
@@ -54,12 +96,28 @@ void clearTerminal()
 {
     system("clear");
 }
+int getInput()
+{
+    int bg_no;
+    printf("Enter The bogie number:");
+    scanf("%d",&bg_no);
+    return bg_no;
+}
+struct train *create_bogie(int bogie_No)
+{
+    struct train *new_bogie;
+    new_bogie = (struct train *)malloc(sizeof(struct train));
+    new_bogie->bogie_no=bogie_No;
+    new_bogie->chain=NULL;
+
+    return new_bogie;
+}
 void create_Train()
 {
     clearTerminal();
     if(start!=NULL)
     {
-        printf("\aTrain already created.You can now add bogies to it!!!");
+        printf("\aTrain already created.You can now add bogies to it!!!\n");
 
     }
     else
@@ -97,7 +155,7 @@ void create_Train()
 void insert_at_end(int bogie_no)
 {
     struct train *new_bogie,*ptr;
-    new_bogie = (struct train *)malloc(sizeof(struct train));
+    new_bogie = create_bogie(bogie_no);
     ptr=start;
     while(1)
     {
@@ -107,10 +165,49 @@ void insert_at_end(int bogie_no)
             ptr=ptr->chain;
 
     }
-
-    new_bogie->bogie_no=bogie_no;
-    new_bogie->chain=NULL;
     ptr->chain=new_bogie;
+}
+
+void insert_at_beg(int bogie_no)
+{
+    struct train *new_bogie=create_bogie(bogie_no);
+    new_bogie->chain=start;
+    start=new_bogie;
+
+}
+void insert_at_pos()
+{
+    display();
+    int pos,bg_no,i;
+    printf("Enter the position where you want to insert a bogie:");
+    scanf("%d",&pos);
+    pos--;
+    struct train *ptr,*new_bogie;
+    ptr=start;
+    for(i=1;i<pos;i++)
+    {
+        ptr=ptr->chain;
+        if(ptr==NULL)
+        {
+            printf("Invalid Positon to insert bogie!!!\n");
+            return 0;
+        }
+
+    }
+    bg_no=getInput();
+    if(ptr->chain==NULL)
+    {
+        insert_at_end(bg_no);
+
+    }
+    else
+    {
+
+        new_bogie=create_bogie(bg_no);
+        new_bogie->chain=ptr->chain;
+        ptr->chain=new_bogie;
+    }
+    printf("New Bogie insert at position %d.\n",++pos);
 }
 void display()
 {
@@ -134,4 +231,3 @@ void display()
    }
 
 }
-
